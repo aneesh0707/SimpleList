@@ -1,1 +1,14 @@
-item1
+#aneesh
+rock
+paper
+scissors
+%
+#shoebum
+asus
+lenovo
+%
+#aproov
+hp
+victus
+vedant
+%
