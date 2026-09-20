@@ -76,7 +76,7 @@ void List::print_menu() {
             break;
 
         case 4:
-            exit(0);
+            return;
         
         default:
             cout << "Select a correct choice.\n";
