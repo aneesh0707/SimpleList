@@ -1,10 +1,12 @@
 #include "include/database.h"
 
 void Database::write(vector<vector<string>> mainList) {
-    ofstream db;
-    db.open("db/lists.sl");
+    ofstream db("db/lists.sl", ios::trunc);
     if (db.is_open()) {
         for (auto& i : mainList) {
+            if (i.empty()) {
+                continue;
+            }
             for (size_t k = 0; k < i.size(); k++) {
                 auto& j = i[k];
                 if (k == 0) {
@@ -20,29 +22,32 @@ void Database::write(vector<vector<string>> mainList) {
     else {
         cout << "cannot open file for writing.";
     }
-    db.close();
 }
 vector<vector<string>> Database::read(){
     string line;
-    ifstream db;
-    db.open("db/lists.sl");
+    ifstream db("db/lists.sl");
 
+    mainList.clear();
     vector<string> userList;
+    bool readingUser = false;
 
     if (db.is_open()) {
         while (getline(db, line, '\n')) {
-            if (line.front() == '#') {
-                cout << "found a hashtag" << line << "\n";
+            if (line.empty()) {
+                continue;
+            }
+
+            if (line[0] == '#') {
                 line.erase(line.begin());
                 userList.push_back(line);
+                readingUser = true;
             }
-            else if (line.front() == '%') {
-                cout << "found a percentage: " << line << "\n";
+            else if (line[0] == '%' && readingUser) {
                 mainList.push_back(userList);
                 userList.clear();
+                readingUser = false;
             }
-            else {
-                cout << "found an item: " << line << "\n";
+            else if (readingUser) {
                 userList.push_back(line);
             }
         }
@@ -50,8 +55,6 @@ vector<vector<string>> Database::read(){
     else {
         cout << "cannot open file for reading.";
     }
-    db.close();
-
     return mainList;
 
 }
